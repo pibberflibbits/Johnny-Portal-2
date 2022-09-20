@@ -1,3 +1,5 @@
+## LINUX VSC SUPPORT DO NOT EDIT ##
+
 <Project>
     <PropertyGroup>
         <FrameworkPathOverride>/lib/mono/4.7.1-api</FrameworkPathOverride>
