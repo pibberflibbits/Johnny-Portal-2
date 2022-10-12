@@ -11,6 +11,8 @@ public class playermovement : MonoBehaviour
 	public bool isgrounded;
 	public bool israiled;
 	public Collider2D coll;
+	
+	public float currentdirection;
 
 	void Update()
     {
@@ -19,11 +21,13 @@ public class playermovement : MonoBehaviour
 		if (Input.GetKey("a"))
 		{
 			move = -1;
+			currentdirection = -1;
 		}
 
 		if (Input.GetKey("d"))
 		{
 			move = 1;
+			currentdirection = 1;
 		}
 
 		if (isgrounded == true)
@@ -38,18 +42,22 @@ public class playermovement : MonoBehaviour
         {
 			israiled = true;
 
-            if(Input.GetKey("x"))
+            if(Input.GetKey("x")) 
             {
 				GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
 				foreach (GameObject r in rail)
 					r.GetComponent<BoxCollider2D>().isTrigger = false;
+					// moves player automatically when holding x on a rail.
+				move = currentdirection;
+				
 			}
+
 			if (!Input.GetKey("x"))
 			{
 				GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
 				foreach (GameObject r in rail)
 					r.GetComponent<BoxCollider2D>().isTrigger = true;
-
+					
 			}
 
 		}
