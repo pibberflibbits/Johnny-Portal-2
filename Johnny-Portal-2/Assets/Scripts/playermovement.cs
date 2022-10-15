@@ -13,19 +13,11 @@ public class playermovement : MonoBehaviour
 	public Collider2D coll;
 	public float currentdirection;
 
-	public float jumps;
-
-	public float jdefault;
-
+	public float njumps = 0;
 	void Update()
     {
-	
 		// resets movement to 0 if no key is pressed
 		move = 0;
-
-		// sets default # of jumps incase we want more than 1 jump later.
-		jumps = jdefault;
-		jdefault = 1;
 
 		if (Input.GetKey("a"))
 		{
@@ -39,23 +31,21 @@ public class playermovement : MonoBehaviour
 			currentdirection = 1;
 		}
 
-
 		// allows player to jump if jump is greater than 1
 		if (isgrounded == true)
 		{
-			if (Input.GetKeyDown("space"))
-			{
-				if (jumps > 0)
-				{
-					rb.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
-					jumps -= jumps;
-				}
+			njumps = 1;   
+			
+			if (Input.GetKeyDown("space") & (njumps > 0))
+			{	
+				rb.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
+				njumps = 0;
 			}
 		}
 
 		if (isgrounded == false)
 		{
-			jumps = 0;
+			njumps = 0;
 		}
    
 		if(coll.IsTouchingLayers(LayerMask.GetMask("Rail")))
@@ -67,9 +57,9 @@ public class playermovement : MonoBehaviour
 				GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
 				foreach (GameObject r in rail)
 					r.GetComponent<BoxCollider2D>().isTrigger = false;
-					// moves player automatically when holding x on a rail.
-				move = currentdirection;
-				jumps = 1;				
+				
+		// moves player automatically in the direction they are facing when holding shift on a rail.
+				move = currentdirection;			
 			}
 
 			if (!Input.GetKey("left shift"))
@@ -101,7 +91,7 @@ public class playermovement : MonoBehaviour
 
     void OnCollisionExit2D(Collision2D theCollision)
 	{
-		if (theCollision.gameObject.name == "Ground")
+		if (theCollision.gameObject.name == "Ground" || theCollision.gameObject.name == "Rail")
 		{
 			isgrounded = false;
 		}
