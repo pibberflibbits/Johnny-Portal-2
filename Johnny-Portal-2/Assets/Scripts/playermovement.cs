@@ -43,6 +43,17 @@ public class playermovement : MonoBehaviour
 			}
 		}
 
+		if (israiled == true)
+		{
+			njumps = 1;   
+			
+			if (Input.GetKeyDown("space") & (njumps > 0))
+			{	
+				rb.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
+				njumps = 0;
+			}
+		}
+
 		if (isgrounded == false)
 		{
 			njumps = 0;
@@ -51,6 +62,7 @@ public class playermovement : MonoBehaviour
 		if(coll.IsTouchingLayers(LayerMask.GetMask("Rail")))
         {
 			israiled = true;
+			isgrounded = false; 
 
             if(Input.GetKey("left shift")) 
             {
@@ -83,7 +95,7 @@ public class playermovement : MonoBehaviour
 
 	void OnCollisionEnter2D(Collision2D theCollision)
 	{
-		if (theCollision.gameObject.name == "Ground" || theCollision.gameObject.name == "Rail")
+		if (theCollision.gameObject.name == "Ground")
 		{
 			isgrounded = true;
 		}
@@ -91,7 +103,7 @@ public class playermovement : MonoBehaviour
 
     void OnCollisionExit2D(Collision2D theCollision)
 	{
-		if (theCollision.gameObject.name == "Ground" || theCollision.gameObject.name == "Rail")
+		if (theCollision.gameObject.name == "Ground")
 		{
 			isgrounded = false;
 		}
