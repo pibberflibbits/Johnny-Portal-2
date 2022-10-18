@@ -14,13 +14,11 @@ public class playermovement : MonoBehaviour
 	float CurrentVelocity;
 	float LastVelocity;
 	public float njumps = 0;
+
 	void FixedUpdate()
-    {
-		// resets movement to 0 if no key is pressed
-		move = 0;
+	{
 
 		CurrentVelocity = rb.velocity.y;
-
 		Debug.Log(rb.velocity.y);
 
 		if(LastVelocity == CurrentVelocity)
@@ -32,6 +30,13 @@ public class playermovement : MonoBehaviour
 		{
 			isgrounded=false; 
 		}
+
+	}
+	
+	void Update()
+    {
+		// resets movement to 0 if no key is pressed
+		move = 0;
 
 		if (Input.GetKey("a"))
 		{
