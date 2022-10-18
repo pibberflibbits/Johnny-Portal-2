@@ -9,15 +9,29 @@ public class playermovement : MonoBehaviour
 	public float MovementSmoothing;
 	private Vector3 Velocity = Vector3.zero;
 	public bool isgrounded;
-	public bool israiled;
 	public Collider2D coll;
 	public float currentdirection;
-
+	float CurrentVelocity;
+	float LastVelocity;
 	public float njumps = 0;
-	void Update()
+	void FixedUpdate()
     {
 		// resets movement to 0 if no key is pressed
 		move = 0;
+
+		CurrentVelocity = rb.velocity.y;
+
+		Debug.Log(rb.velocity.y);
+
+		if(LastVelocity == CurrentVelocity)
+		{
+			isgrounded=true;
+		}
+
+		if(LastVelocity != CurrentVelocity)
+		{
+			isgrounded=false; 
+		}
 
 		if (Input.GetKey("a"))
 		{
@@ -43,17 +57,6 @@ public class playermovement : MonoBehaviour
 			}
 		}
 
-		if (israiled == true)
-		{
-			njumps = 1;   
-			
-			if (Input.GetKeyDown("space") & (njumps > 0))
-			{	
-				rb.AddForce(new Vector2(0, 10), ForceMode2D.Impulse);
-				njumps = 0;
-			}
-		}
-
 		if (isgrounded == false)
 		{
 			njumps = 0;
@@ -61,9 +64,6 @@ public class playermovement : MonoBehaviour
    
 		if(coll.IsTouchingLayers(LayerMask.GetMask("Rail")))
         {
-			israiled = true;
-			isgrounded = false; 
-
             if(Input.GetKey("left shift")) 
             {
 				GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
@@ -84,28 +84,9 @@ public class playermovement : MonoBehaviour
 
 		}
 
-		if(!coll.IsTouchingLayers(LayerMask.GetMask("Rail")))
-        {
-			israiled = false;
-        }
-
 		targetVelocity = new Vector2(move * 10f, rb.velocity.y);
 		rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref Velocity, MovementSmoothing);
-	}
-
-	void OnCollisionEnter2D(Collision2D theCollision)
-	{
-		if (theCollision.gameObject.name == "Ground")
-		{
-			isgrounded = true;
-		}
-	}
-
-    void OnCollisionExit2D(Collision2D theCollision)
-	{
-		if (theCollision.gameObject.name == "Ground")
-		{
-			isgrounded = false;
-		}
+		LastVelocity = CurrentVelocity;
 	}
 }
+
