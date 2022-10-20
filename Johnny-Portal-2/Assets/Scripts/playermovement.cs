@@ -10,11 +10,10 @@ public class playermovement : MonoBehaviour
 	private Vector3 Velocity = Vector3.zero;
 	public bool isgrounded;
 	public Collider2D coll;
-	public float currentdirection;
 	float CurrentVelocity;
 	float LastVelocity;
-	public float njumps = 0;
-
+	float njumps=0; 
+	float TargetSpeed = 1f;
 	void FixedUpdate()
 	{
 
@@ -40,14 +39,12 @@ public class playermovement : MonoBehaviour
 
 		if (Input.GetKey("a"))
 		{
-			move = -1;
-			currentdirection = -1;
+			move = -TargetSpeed;
 		}
 
 		if (Input.GetKey("d"))
 		{
-			move = 1;
-			currentdirection = 1;
+			move = TargetSpeed;
 		}
 
 		// allows player to jump if jump is greater than 1
@@ -74,10 +71,11 @@ public class playermovement : MonoBehaviour
 				GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
 				foreach (GameObject r in rail)
 					r.GetComponent<BoxCollider2D>().isTrigger = false;
-				
-		// moves player automatically in the direction they are facing when holding shift on a rail.
-				move = currentdirection;			
+			if(TargetSpeed < 2f)
+				TargetSpeed = TargetSpeed + .1f;  
 			}
+		}
+
 
 			if (!Input.GetKey("left shift"))
 			{
@@ -86,8 +84,6 @@ public class playermovement : MonoBehaviour
 					r.GetComponent<BoxCollider2D>().isTrigger = true;
 					
 			}
-
-		}
 
 		targetVelocity = new Vector2(move * 10f, rb.velocity.y);
 		rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref Velocity, MovementSmoothing);
