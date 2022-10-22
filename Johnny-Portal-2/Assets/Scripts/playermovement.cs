@@ -10,8 +10,8 @@ public class playermovement : MonoBehaviour
 	private Vector3 Velocity = Vector3.zero;
 	public bool isgrounded;
 	public Collider2D coll;
-	float CurrentVelocity;
-	float LastVelocity;
+	float CurrentYVelocity;
+	float LastYVelocity;
 	float njumps=0; 
 	public float PlayerTargetSpeed = 1f;
 	bool positivemove;
@@ -20,15 +20,15 @@ public class playermovement : MonoBehaviour
 	void FixedUpdate()
 	{
 
-		CurrentVelocity = rb.velocity.y;	
-		Debug.Log(UpdateSpeedChecker);
+		CurrentYVelocity = rb.velocity.y;	
+		Debug.Log(rb.velocity.x);
 
-		if(LastVelocity == CurrentVelocity)
+		if(LastYVelocity == CurrentYVelocity)
 		{
 			isgrounded=true;
 		}
 
-		if(LastVelocity != CurrentVelocity)
+		if(LastYVelocity != CurrentYVelocity)
 		{
 			isgrounded=false;
 		}
@@ -74,6 +74,15 @@ public class playermovement : MonoBehaviour
 				GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
 				foreach (GameObject r in rail)
 					r.GetComponent<BoxCollider2D>().isTrigger = false;
+	
+				if(rb.velocity.x < 1.3f & (rb.velocity.x > -0) | (rb.velocity.x > -1.3f & (rb.velocity.x < -0)))
+				{
+					foreach (GameObject r in rail)
+						r.GetComponent<BoxCollider2D>().isTrigger = true; 
+				}
+				
+
+
 				if(PlayerTargetSpeed < 2 & (UpdateSpeedChecker > 0))
 				{
 					PlayerTargetSpeed = PlayerTargetSpeed + .1f;
@@ -94,9 +103,7 @@ public class playermovement : MonoBehaviour
 			GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
 			foreach (GameObject r in rail)
 				r.GetComponent<BoxCollider2D>().isTrigger = true;
-					
 		}
-
 
 		positivemove = move > 0; 
 			
@@ -107,9 +114,10 @@ public class playermovement : MonoBehaviour
 
 		targetVelocity = new Vector2(move * 10f, rb.velocity.y);
 		rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref Velocity, MovementSmoothing);
-		LastVelocity = CurrentVelocity;
+		LastYVelocity = CurrentYVelocity;
 		lastpositivemove = positivemove; 
 	}
 	
 }
+
 
