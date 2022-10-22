@@ -13,12 +13,15 @@ public class playermovement : MonoBehaviour
 	float CurrentVelocity;
 	float LastVelocity;
 	float njumps=0; 
-	float TargetSpeed = 1f;
+	public float PlayerTargetSpeed = 1f;
+	bool positivemove;
+	bool lastpositivemove;
+	int UpdateSpeedChecker = 1; 
 	void FixedUpdate()
 	{
 
-		CurrentVelocity = rb.velocity.y;
-		Debug.Log(rb.velocity.y);
+		CurrentVelocity = rb.velocity.y;	
+		Debug.Log(UpdateSpeedChecker);
 
 		if(LastVelocity == CurrentVelocity)
 		{
@@ -27,7 +30,7 @@ public class playermovement : MonoBehaviour
 
 		if(LastVelocity != CurrentVelocity)
 		{
-			isgrounded=false; 
+			isgrounded=false;
 		}
 
 	}
@@ -39,12 +42,12 @@ public class playermovement : MonoBehaviour
 
 		if (Input.GetKey("a"))
 		{
-			move = -TargetSpeed;
+			move = -PlayerTargetSpeed;
 		}
 
 		if (Input.GetKey("d"))
 		{
-			move = TargetSpeed;
+			move = PlayerTargetSpeed;
 		}
 
 		// allows player to jump if jump is greater than 1
@@ -71,23 +74,42 @@ public class playermovement : MonoBehaviour
 				GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
 				foreach (GameObject r in rail)
 					r.GetComponent<BoxCollider2D>().isTrigger = false;
-			if(TargetSpeed < 2f)
-				TargetSpeed = TargetSpeed + .1f;  
+				if(PlayerTargetSpeed < 2 & (UpdateSpeedChecker > 0))
+				{
+					PlayerTargetSpeed = PlayerTargetSpeed + .1f;
+					UpdateSpeedChecker--; 
+				}
+
 			}
+		} 
+
+		if(!coll.IsTouchingLayers(LayerMask.GetMask("Rail")) & (UpdateSpeedChecker < 1))
+		{
+			UpdateSpeedChecker++; 
 		}
 
 
-			if (!Input.GetKey("left shift"))
-			{
-				GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
-				foreach (GameObject r in rail)
-					r.GetComponent<BoxCollider2D>().isTrigger = true;
+		if (!Input.GetKey("left shift"))
+		{
+			GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
+			foreach (GameObject r in rail)
+				r.GetComponent<BoxCollider2D>().isTrigger = true;
 					
-			}
+		}
+
+
+		positivemove = move > 0; 
+			
+		if (lastpositivemove != positivemove)
+		{
+			PlayerTargetSpeed = 1f; 
+		}
 
 		targetVelocity = new Vector2(move * 10f, rb.velocity.y);
 		rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref Velocity, MovementSmoothing);
 		LastVelocity = CurrentVelocity;
+		lastpositivemove = positivemove; 
 	}
+	
 }
 
