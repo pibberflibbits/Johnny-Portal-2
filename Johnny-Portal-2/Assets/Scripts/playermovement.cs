@@ -75,7 +75,7 @@ public class playermovement : MonoBehaviour
 				foreach (GameObject r in rail)
 					r.GetComponent<BoxCollider2D>().isTrigger = false;
 	
-				if(rb.velocity.x < 1.3f & (rb.velocity.x > -0) | (rb.velocity.x > -1.3f & (rb.velocity.x < -0)))
+				if(rb.velocity.x < 1.3f & (rb.velocity.x > -0) | (rb.velocity.x > -1.3f & (rb.velocity.x < -0) | (rb.velocity.x == 0)))
 				{
 					foreach (GameObject r in rail)
 						r.GetComponent<BoxCollider2D>().isTrigger = true; 
