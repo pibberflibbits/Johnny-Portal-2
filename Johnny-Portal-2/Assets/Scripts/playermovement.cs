@@ -75,22 +75,28 @@ public class playermovement : MonoBehaviour
 				foreach (GameObject r in rail)
 					r.GetComponent<BoxCollider2D>().isTrigger = false;
 	
-				if(rb.velocity.x < 1.3f & (rb.velocity.x > -0) | (rb.velocity.x > -1.3f & (rb.velocity.x < -0) | (rb.velocity.x == 0)))
+			if(rb.velocity.x < 1.3f & (rb.velocity.x > -0) | (rb.velocity.x > -1.3f & (rb.velocity.x < -0) | (rb.velocity.x == 0)))
 				{
 					foreach (GameObject r in rail)
-						r.GetComponent<BoxCollider2D>().isTrigger = true; 
+						r.GetComponent<BoxCollider2D>().isTrigger = true;
 				}
 				
-
 
 				if(PlayerTargetSpeed < 2 & (UpdateSpeedChecker > 0))
 				{
 					PlayerTargetSpeed = PlayerTargetSpeed + .1f;
 					UpdateSpeedChecker--; 
 				}
-
+				
 			}
 		} 
+
+			
+		if(rb.velocity.x < 1.3f & (rb.velocity.x > -0) | (rb.velocity.x > -1.3f & (rb.velocity.x < -0) | (rb.velocity.x == 0)))
+				{
+					PlayerTargetSpeed = 1f;
+				}
+
 
 		if(!coll.IsTouchingLayers(LayerMask.GetMask("Rail")) & (UpdateSpeedChecker < 1))
 		{
