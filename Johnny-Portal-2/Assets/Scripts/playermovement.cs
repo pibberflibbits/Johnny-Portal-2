@@ -21,7 +21,7 @@ public class playermovement : MonoBehaviour
 	{
 
 		CurrentYVelocity = rb.velocity.y;	
-		Debug.Log(rb.velocity.x);
+		Debug.Log(CurrentYVelocity);
 
 		if(LastYVelocity == CurrentYVelocity)
 		{
@@ -67,35 +67,34 @@ public class playermovement : MonoBehaviour
 			njumps = 0;
 		}
    
-		if(coll.IsTouchingLayers(LayerMask.GetMask("Rail")))
-        {
-            if(Input.GetKey("left shift")) 
+		if (coll.IsTouchingLayers(LayerMask.GetMask("Rail")) & (CurrentYVelocity < 0))
+           
+			{
+				if(Input.GetKey("left shift"))
             {
 				GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
 				foreach (GameObject r in rail)
 					r.GetComponent<BoxCollider2D>().isTrigger = false;
-	
-			if(rb.velocity.x < 1.3f & (rb.velocity.x > -0) | (rb.velocity.x > -1.3f & (rb.velocity.x < -0) | (rb.velocity.x == 0)))
-				{
-					foreach (GameObject r in rail)
-						r.GetComponent<BoxCollider2D>().isTrigger = true;
-				}
-				
+
 
 				if(PlayerTargetSpeed < 2 & (UpdateSpeedChecker > 0))
 				{
 					PlayerTargetSpeed = PlayerTargetSpeed + .1f;
 					UpdateSpeedChecker--; 
 				}
-				
 			}
 		} 
 
-			
 		if(rb.velocity.x < 1.3f & (rb.velocity.x > -0) | (rb.velocity.x > -1.3f & (rb.velocity.x < -0) | (rb.velocity.x == 0)))
-				{
-					PlayerTargetSpeed = 1f;
-				}
+			{
+								
+		     	GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
+				foreach (GameObject r in rail)
+					r.GetComponent<BoxCollider2D>().isTrigger = true;
+					PlayerTargetSpeed = 1f; 
+			}
+				
+			
 
 
 		if(!coll.IsTouchingLayers(LayerMask.GetMask("Rail")) & (UpdateSpeedChecker < 1))
