@@ -9,6 +9,7 @@ public class playermovement : MonoBehaviour
 	public float MovementSmoothing;
 	private Vector3 Velocity = Vector3.zero;
 	public bool isgrounded;
+	public bool israil; 
 	public Collider2D coll;
 	float CurrentYVelocity;
 	float LastYVelocity;
@@ -17,6 +18,7 @@ public class playermovement : MonoBehaviour
 	bool positivemove;
 	bool lastpositivemove;
 	int UpdateSpeedChecker = 1; 
+	private float raildirection; 
 	void FixedUpdate()
 	{
 
@@ -43,11 +45,13 @@ public class playermovement : MonoBehaviour
 		if (Input.GetKey("a"))
 		{
 			move = -PlayerTargetSpeed;
+			raildirection = -PlayerTargetSpeed;
 		}
 
 		if (Input.GetKey("d"))
 		{
 			move = PlayerTargetSpeed;
+			raildirection = PlayerTargetSpeed;
 		}
 
 		// allows player to jump if jump is greater than 1
@@ -66,24 +70,34 @@ public class playermovement : MonoBehaviour
 		{
 			njumps = 0;
 		}
+  
+	// this whole section is an absolute mess, if you have any idea how to fix this, please do.
+   // It works completely fine but like, wow!
    
-		if (coll.IsTouchingLayers(LayerMask.GetMask("Rail")) & (CurrentYVelocity < 0))
+		if (coll.IsTouchingLayers(LayerMask.GetMask("Rail")))
            
 			{
 				if(Input.GetKey("left shift"))
-            {
-				GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
-				foreach (GameObject r in rail)
-					r.GetComponent<BoxCollider2D>().isTrigger = false;
-
-
-				if(PlayerTargetSpeed < 2 & (UpdateSpeedChecker > 0))
-				{
-					PlayerTargetSpeed = PlayerTargetSpeed + .1f;
-					UpdateSpeedChecker--; 
-				}
-			}
-		} 
+					{
+					if(CurrentYVelocity < 0)
+						{
+							GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
+							foreach (GameObject r in rail)
+								r.GetComponent<BoxCollider2D>().isTrigger = false;
+								israil = true; 
+								// israil is not currently used. But it would work if we wanted to use it. 
+								// all this does is let you pass through the rail when your jumping up but land on it when your falling down
+						}
+				
+					if(PlayerTargetSpeed < 2 & (UpdateSpeedChecker > 0))
+						{
+							PlayerTargetSpeed = PlayerTargetSpeed + .1f;
+							UpdateSpeedChecker--; 
+							// this makes sure that speed only increases once per rail
+							// the UpdateSpeedChecker thing is really janky
+						}
+					}
+		    }
 
 		if(rb.velocity.x < 1.3f & (rb.velocity.x > -0) | (rb.velocity.x > -1.3f & (rb.velocity.x < -0) | (rb.velocity.x == 0)))
 			{
@@ -96,7 +110,7 @@ public class playermovement : MonoBehaviour
 				
 			
 
-
+        // insures UpdateSpeedChecker is only increased once per rail. 
 		if(!coll.IsTouchingLayers(LayerMask.GetMask("Rail")) & (UpdateSpeedChecker < 1))
 		{
 			UpdateSpeedChecker++; 
@@ -108,8 +122,10 @@ public class playermovement : MonoBehaviour
 			GameObject[] rail = GameObject.FindGameObjectsWithTag("Rail");
 			foreach (GameObject r in rail)
 				r.GetComponent<BoxCollider2D>().isTrigger = true;
+			israil = false; 
 		}
 
+        // resests movement speed if you change directoins
 		positivemove = move > 0; 
 			
 		if (lastpositivemove != positivemove)
