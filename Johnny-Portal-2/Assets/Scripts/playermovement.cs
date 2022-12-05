@@ -40,6 +40,7 @@ public class playermovement : MonoBehaviour
 	void Update()
     {
 		// resets movement to 0 if no key is pressed
+		// makes MovementSmoothing default to 0.5f 
 		move = 0;
 
 		if (Input.GetKey("a"))
@@ -75,7 +76,6 @@ public class playermovement : MonoBehaviour
    // It works completely fine but like, wow!
    
 		if (coll.IsTouchingLayers(LayerMask.GetMask("Rail")))
-           
 			{
 				if(Input.GetKey("left shift"))
 					{
@@ -85,11 +85,11 @@ public class playermovement : MonoBehaviour
 							foreach (GameObject r in rail)
 								r.GetComponent<BoxCollider2D>().isTrigger = false;
 								israil = true; 
-								// israil is not currently used. But it would work if we wanted to use it. 
+								
 								// all this does is let you pass through the rail when your jumping up but land on it when your falling down
 						}
 				
-					if(PlayerTargetSpeed < 2 & (UpdateSpeedChecker > 0))
+					if(PlayerTargetSpeed < 2 & (UpdateSpeedChecker > 0 & (isgrounded = true)))
 						{
 							PlayerTargetSpeed = PlayerTargetSpeed + .1f;
 							UpdateSpeedChecker--; 
@@ -98,6 +98,16 @@ public class playermovement : MonoBehaviour
 						}
 					}
 		    }
+
+		if (israil == false)
+		{
+			MovementSmoothing = 0.5f;
+		}
+		
+		if (israil == true)
+		{
+			MovementSmoothing = 0.3f; 
+		}
 
 		if(rb.velocity.x < 1.3f & (rb.velocity.x > -0) | (rb.velocity.x > -1.3f & (rb.velocity.x < -0) | (rb.velocity.x == 0)))
 			{
